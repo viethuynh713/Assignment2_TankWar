@@ -1,14 +1,21 @@
 import sys
 import pygame
 from pygame.locals import *
+from pygame.math import *
+from Bullet.BulletManager import BulletManager
 
 from Constant import *
+from Wall.EdgeManager import EdgeManager
 
 class GameController():
     def __init__(self):
+        self.edgeManager = EdgeManager()
+        self.bulletManager = BulletManager()
         self.Play()
+
     def InitGame(self):
         pass
+
     def Play(self):
         # Initialize
         pygame.init()
@@ -20,13 +27,25 @@ class GameController():
         # Set icon for the game
         icon = pygame.image.load("../asset/icon/war.png")
         pygame.display.set_icon(icon)
+
+        self.edgeManager.createEdge(Vector2(1000, 800), Vector2(1000, 300))
+        self.bulletManager.createBullet(Vector2(100, 360), Vector2.rotate(UNIT_VECTOR, 30))
+
         # Set icon for the game
         while True:
+            self.screen.fill((0, 0, 0))
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
+            self.edgeManager.draw(self.screen)
+            self.bulletManager.moveAllBullet(self.screen)
+            
+            pygame.display.update()
+            self.clock.tick(FPS)
+
     def endGame(self):
         pass
+
     def resetGame(self):
         pass
