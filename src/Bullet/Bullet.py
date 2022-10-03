@@ -24,7 +24,9 @@ class Bullet:
 
     def checkBounce(self, edgeManager: EdgeManager) -> None:
         if self.pos != self.prevPos:
-            self.pos, self.speed = edgeManager.checkBounce(self.pos, self.prevPos, self.speed)
+            self.pos, self.direction = edgeManager.checkBounce(self.pos, self.prevPos, self.direction)
+            self.prevPos = self.pos.copy()
 
     def draw(self, screen) -> None:
         pygame.draw.circle(screen, (0, 0, 255), self.pos, 5)
+        

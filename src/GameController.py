@@ -28,8 +28,14 @@ class GameController():
         icon = pygame.image.load("../asset/icon/war.png")
         pygame.display.set_icon(icon)
 
-        self.edgeManager.createEdge(Vector2(1000, 800), Vector2(1000, 300))
-        self.bulletManager.createBullet(Vector2(100, 360), Vector2.rotate(UNIT_VECTOR, 30))
+        self.edgeManager.createEdge(Vector2(100, 100), Vector2(1180, 100))
+        self.edgeManager.createEdge(Vector2(1180, 100), Vector2(1180, 620))
+        self.edgeManager.createEdge(Vector2(1180, 620), Vector2(100, 620))
+        self.edgeManager.createEdge(Vector2(100, 620), Vector2(100, 100))
+
+        self.edgeManager.createEdge(Vector2(700, 700), Vector2(400, 300))
+
+        self.bulletManager.createBullet(Vector2(500, 400), Vector2.rotate(UNIT_VECTOR, 30))
 
         # Set icon for the game
         while True:

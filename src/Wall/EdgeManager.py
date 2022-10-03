@@ -13,20 +13,21 @@ class EdgeManager:
         edge = Edge(pos1, pos2)
         self.edgeList.append(edge)
 
-    def checkBounce(self, pos: Vector2, prevPos: Vector2, speed: Vector2) -> tuple[Vector2, Vector2]:
-        pos, direction = (pos, speed)
-        cutPoint, edge = (None, None)
+    def checkBounce(self, pos: Vector2, prevPos: Vector2, direction: Vector2) -> tuple[Vector2, Vector2]:
+        posRes, dirRes = (pos, direction)
+        cutPointRes, edgeRes = (None, None)
         for edge in self.edgeList:
             cutPointTemp, edgeTemp = edge.checkBounce(pos, prevPos)
             if cutPointTemp != None:
-                if cutPoint != None:
-                    cutPoint, edge = (cutPointTemp, edgeTemp)
-                elif abs(cutPointTemp.x - pos.x) < abs(cutPoint.x - pos.x):
-                    cutPoint, edge = (cutPointTemp, edgeTemp)
-        if cutPoint != None:
-            pos = symmetryPointThroughLine(edge.getEdge(), pos)
-            direction = reflectVector(speed, edge.getNormalize())
-        return (pos, direction)
+                print(str(prevPos) + ", " + str(pos))
+                if cutPointRes == None:
+                    cutPointRes, edgeRes = (cutPointTemp, edgeTemp)
+                elif abs(cutPointTemp.x - pos.x) < abs(cutPointRes.x - pos.x):
+                    cutPointRes, edgeRes = (cutPointTemp, edgeTemp)
+        if cutPointRes != None:
+            posRes = symmetryPointThroughLine(edgeRes.getEdge(), pos)
+            dirRes = reflectVector(direction, edgeRes.getNormalize())
+        return (posRes, dirRes)
 
     def draw(self, screen):
         for edge in self.edgeList:

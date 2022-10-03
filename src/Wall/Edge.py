@@ -13,7 +13,10 @@ class Edge:
         self.normalize = Vector2.normalize(Vector2.rotate(pos2 - pos1, 90))
 
     def checkBounce(self, pos: Vector2, prevPos: Vector2) -> tuple:
-        return (cutPointOf2Lines(self.edge, (prevPos, pos)), self)
+        cutPoint = cutPointOf2Lines(self.edge, (prevPos, pos))
+        if cutPoint == pos:
+            cutPoint = None
+        return (cutPoint, self)
 
     def draw(self, screen):
         pygame.draw.line(screen, (48, 213, 200), self.edge[0], self.edge[1], 3)
