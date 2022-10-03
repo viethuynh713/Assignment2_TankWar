@@ -3,6 +3,8 @@ from pygame.locals import *
 from Constant import *
 from pygame.math import *
 
+from Wall.EdgeManager import EdgeManager
+
 class Bullet:
     def __init__(self, bulletManager, pos: Vector2, direction: Vector2) -> None:
         self.bulletManager = bulletManager
@@ -19,6 +21,10 @@ class Bullet:
         self.prevPos = self.pos.copy()
         self.pos += self.direction * self.speed
         self.restTime -= 1
+
+    def checkBounce(self, edgeManager: EdgeManager) -> None:
+        if self.pos != self.prevPos:
+            self.pos, self.speed = edgeManager.checkBounce(self.pos, self.prevPos, self.speed)
 
     def draw(self, screen) -> None:
         pygame.draw.circle(screen, (0, 0, 255), self.pos, 5)

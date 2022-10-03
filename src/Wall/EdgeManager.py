@@ -14,7 +14,7 @@ class EdgeManager:
         self.edgeList.append(edge)
 
     def checkBounce(self, pos: Vector2, prevPos: Vector2, speed: Vector2) -> tuple[Vector2, Vector2]:
-        pos, direction = (None, None)
+        pos, direction = (pos, speed)
         cutPoint, edge = (None, None)
         for edge in self.edgeList:
             cutPointTemp, edgeTemp = edge.checkBounce(pos, prevPos)

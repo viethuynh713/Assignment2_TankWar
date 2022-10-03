@@ -11,7 +11,6 @@ class Edge:
         self.friction = EDGE_FRICTION
         # support statistics
         self.normalize = Vector2.normalize(Vector2.rotate(pos2 - pos1, 90))
-        self.a, self.b = linearCoefficient(self.edge[0], self.edge[1])
 
     def checkBounce(self, pos: Vector2, prevPos: Vector2) -> tuple:
         return (cutPointOf2Lines(self.edge, (prevPos, pos)), self)
@@ -22,5 +21,5 @@ class Edge:
     def getEdge(self):
         return self.edge
 
-    def getNormalize(self):
+    def getNormalize(self) -> Vector2:
         return self.normalize

@@ -39,7 +39,7 @@ class GameController():
                     pygame.quit()
                     sys.exit()
             self.edgeManager.draw(self.screen)
-            self.bulletManager.moveAllBullet(self.screen)
+            self.bulletManager.moveAllBullet(self.screen, self.edgeManager)
             
             pygame.display.update()
             self.clock.tick(FPS)
