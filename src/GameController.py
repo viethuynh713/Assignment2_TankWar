@@ -1,10 +1,13 @@
 import sys
 import pygame
 from pygame.locals import *
+from pygame.math import *
+from Bullet.BulletManager import BulletManager
 
 from Constant import *
 from EnumClass import *
 from Player.PlayerManager import PlayerManager
+from Wall.EdgeManager import EdgeManager
 
 
 vector2 = pygame.math.Vector2
@@ -17,7 +20,10 @@ class GameController():
         #self.bot
         self.maxPlayer = 2;
         self.InitGame()
+        self.edgeManager = EdgeManager()
+        self.bulletManager = BulletManager()
         self.Play()
+
     def InitGame(self):
         if self.mode == Mode.PVP:
             for i in range(self.maxPlayer):
@@ -37,6 +43,16 @@ class GameController():
         # Set icon for the game
         icon = pygame.image.load("../asset/icon/war.png")
         pygame.display.set_icon(icon)
+
+        self.edgeManager.createEdge(Vector2(100, 100), Vector2(1180, 100))
+        self.edgeManager.createEdge(Vector2(1180, 100), Vector2(1180, 620))
+        self.edgeManager.createEdge(Vector2(1180, 620), Vector2(100, 620))
+        self.edgeManager.createEdge(Vector2(100, 620), Vector2(100, 100))
+
+        self.edgeManager.createEdge(Vector2(700, 700), Vector2(400, 300))
+
+        self.bulletManager.createBullet(Vector2(500, 400), Vector2.rotate(UNIT_VECTOR, 30))
+
         # Set icon for the game
         while True:
             self.screen.fill((200,255,255))
@@ -60,8 +76,15 @@ class GameController():
                             
                             
                     
+            self.edgeManager.draw(self.screen)
+            self.bulletManager.moveAllBullet(self.screen, self.edgeManager)
+            
+            pygame.display.update()
+            self.clock.tick(FPS)
+
     def endGame(self):
         pass
+
     def resetGame(self):
         pass
     def HandleEventUI(self):
