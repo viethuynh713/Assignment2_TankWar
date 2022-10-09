@@ -32,9 +32,10 @@ def cutPointOf2Lines(line1: tuple[Vector2, Vector2], line2: tuple[Vector2, Vecto
     A = np.array([[a1, b1], [a2, b2]])
     B = np.array([-c1, -c2])
     cutPntx, cutPnty = solveSystemEquations(A, B)
+    if cutPntx == None:
+        return None
     cutPnt = Vector2(cutPntx, cutPnty)
     if isPointInLine(line1, cutPnt) and isPointInLine(line2, cutPnt):
-        print(str(cutPnt))
         return cutPnt
     return None
 
@@ -51,9 +52,7 @@ def symmetryPointThroughLine(line: tuple[Vector2, Vector2], point: Vector2) -> V
     return Vector2(x, y)
 
 def reflectVector(velocity: Vector2, normalize: Vector2) -> Vector2:
-    # print(str(velocity) + ", " + str(normalize))
     angle = abs(Vector2.angle_to(velocity, normalize))
-    print(angle)
     n = normalize.copy()
     if angle < 90:
         n = -n
