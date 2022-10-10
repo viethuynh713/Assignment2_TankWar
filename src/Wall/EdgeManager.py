@@ -19,7 +19,7 @@ class EdgeManager:
         for edge in self.edgeList:
             cutPointTemp, edgeTemp = edge.checkBounce(pos, prevPos)
             if cutPointTemp != None:
-                print(str(prevPos) + ", " + str(pos))
+                #print(str(prevPos) + ", " + str(pos))
                 if cutPointRes == None:
                     cutPointRes, edgeRes = (cutPointTemp, edgeTemp)
                 elif abs(cutPointTemp.x - pos.x) < abs(cutPointRes.x - pos.x):

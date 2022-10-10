@@ -69,13 +69,8 @@ class GameController():
                         
                         
                 
-            self.extraPlayers.Update(self.state,self.screen)
-            self.mainPlayers.Update(self.state,self.screen)
-            pygame.display.update()
-            
-                            
-                            
-                    
+            self.extraPlayers.Update(self.state,self.screen,self.bulletManager)
+            self.mainPlayers.Update(self.state,self.screen,self.bulletManager)
             self.edgeManager.draw(self.screen)
             self.bulletManager.moveAllBullet(self.screen, self.edgeManager)
             

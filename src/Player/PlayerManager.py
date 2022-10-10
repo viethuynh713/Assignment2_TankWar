@@ -1,5 +1,6 @@
 
 import pygame
+from Bullet.BulletManager import BulletManager
 from EnumClass import GameState, PlayerType
 from Player.Player import Player
 
@@ -20,7 +21,7 @@ class PlayerManager:
         else:
             dir = vector2(-1,0)
             
-        self.players.append(Player(pos,dir))
+        self.players.append(Player(pos,dir, self.playerType))
         
         self.currentPlayer = self.players[0]
         
@@ -35,7 +36,7 @@ class PlayerManager:
             self.currentPlayer = self.players[index + 1] 
         else:
             self.currentPlayer = self.players[0]
-    def Update(self,state,screen):
+    def Update(self,state,screen,bulletManager:BulletManager):
         press = pygame.key.get_pressed()
         
         if state == GameState.PLAYING:
@@ -48,9 +49,12 @@ class PlayerManager:
                     self.currentPlayer.move(True)
                 if press[pygame.K_s]:
                     self.currentPlayer.move(False)
-                if press[pygame.K_SPACE] and pygame.KEYUP:
-                    
+                if press[pygame.K_v]:
                     self.SwitchPlayer()
+                if press[pygame.K_b]:
+                    pos,dir = self.currentPlayer.fire()
+                    #print(pos,"//",dir)
+                    bulletManager.createBullet(pos,dir)
             else:
                 if press[pygame.K_LEFT]:
                     self.currentPlayer.rotate(True)
@@ -60,11 +64,14 @@ class PlayerManager:
                     self.currentPlayer.move(True)
                 if press[pygame.K_DOWN]:
                     self.currentPlayer.move(False)
-                if press[pygame.K_RETURN] and pygame.KEYUP:
+                if press[pygame.K_n]:
                     self.SwitchPlayer()
+                if press[pygame.K_m]:
+                    pos,dir = self.currentPlayer.fire()
+                    bulletManager.createBullet(pos,dir)
         for player in self.players:
             player.update(screen)
-        screen.blit(self.flag,(self.currentPlayer.position.x,self.currentPlayer.position.y + 10))
+        screen.blit(self.flag,(self.currentPlayer.position.x,self.currentPlayer.position.y))
             
         
     
