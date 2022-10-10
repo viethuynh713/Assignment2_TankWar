@@ -11,7 +11,7 @@ class BulletManager:
         self.bulletList = []
 
     def createBullet(self, pos: Vector2, direction: Vector2) -> None:
-        bullet = Bullet(self, pos, direction)
+        bullet = Bullet(self, pos.copy(), direction.copy())
         self.bulletList.append(bullet)
 
     def removeBullet(self, bullet: Bullet) -> None:
