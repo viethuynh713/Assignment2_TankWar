@@ -9,7 +9,10 @@ vector2 = pygame.math.Vector2
 class PlayerManager:
     def __init__(self,typeOfPlayer:PlayerType):
         self.players = []
-        
+        self.canFire = True
+        self.CanSwitch = True
+        self.TimeFire = 3000
+        self.TimeSwitch = 1000
         self.playerType = typeOfPlayer
         self.flag = pygame.image.load('../asset/icon/flag.png')
         self.flag = pygame.transform.scale(self.flag,(20,20))
@@ -36,9 +39,19 @@ class PlayerManager:
             self.currentPlayer = self.players[index + 1] 
         else:
             self.currentPlayer = self.players[0]
-    def Update(self,state,screen,bulletManager:BulletManager):
+    def CountDownFire(self,dt):
+        self.TimeFire -= dt
+        self.TimeSwitch -= dt
+        if self.TimeFire <= 0:
+            self.canFire = True
+            self.TimeFire = 3000
+        if self.TimeSwitch <= 0:
+            self.CanSwitch = True
+            self.TimeSwitch = 1000
+    def Update(self,state,screen,bulletManager:BulletManager,dt):
         press = pygame.key.get_pressed()
-        
+       
+        self.CountDownFire(dt)
         if state == GameState.PLAYING:
             if self.playerType == PlayerType.MAIN:
                 if press[pygame.K_a]:
@@ -49,12 +62,14 @@ class PlayerManager:
                     self.currentPlayer.move(True)
                 if press[pygame.K_s]:
                     self.currentPlayer.move(False)
-                if press[pygame.K_v]:
+                if press[pygame.K_v]and self.CanSwitch:
                     self.SwitchPlayer()
-                if press[pygame.K_b]:
+                    self.CanSwitch = False
+                if press[pygame.K_b] and self.canFire:
                     pos,dir = self.currentPlayer.fire()
-                    #print(pos,"//",dir)
                     bulletManager.createBullet(pos,dir)
+                    self.canFire = False
+                    
             else:
                 if press[pygame.K_LEFT]:
                     self.currentPlayer.rotate(True)
@@ -64,14 +79,17 @@ class PlayerManager:
                     self.currentPlayer.move(True)
                 if press[pygame.K_DOWN]:
                     self.currentPlayer.move(False)
-                if press[pygame.K_n]:
+                if press[pygame.K_n] and self.CanSwitch:
                     self.SwitchPlayer()
-                if press[pygame.K_m]:
+                    self.CanSwitch =False
+                if press[pygame.K_m]and self.canFire:
                     pos,dir = self.currentPlayer.fire()
                     bulletManager.createBullet(pos,dir)
-        for player in self.players:
-            player.update(screen)
-        screen.blit(self.flag,(self.currentPlayer.position.x,self.currentPlayer.position.y))
+                    self.canFire = False
+            for player in self.players:
+                player.update(screen)
+            screen.blit(self.flag,(self.currentPlayer.position.x,self.currentPlayer.position.y))
+            
             
         
     

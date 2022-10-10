@@ -9,19 +9,18 @@ vector2 = pygame.math.Vector2
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos: vector2, dir: vector2, isMain):
         self.position = pos
-        self.rootDir = dir
-        self.direction = dir
+        self.rootDir = vector2(0,-1)
         self.SPEED = 10
         self.DENTAL_ANGLE = 1
+        self.direction = dir
         self.CalculateAngle()
         if isMain == PlayerType.MAIN:
             self.rootImage = pygame.image.load('../asset/Image/player.png')
         else:
             self.rootImage = pygame.image.load('../asset/Image/extraPlayer.png')
-        self.rootImage = pygame.transform.scale(self.rootImage,(70,70))
+        self.rootImage = pygame.transform.scale(self.rootImage,(80,80))
         self.rect = self.rootImage.get_rect()
-        self.rect.center = 35,35
-        
+        self.rect.center = pos + vector2(30,40)
         self.image,self.rect = self.rot_center(self.rootImage,self.rect,self.angle)
 
     def CalculateAngle(self):
@@ -37,19 +36,18 @@ class Player(pygame.sprite.Sprite):
         if(self.position.x > 1210):self.position.x = 1210
         if(self.position.y < 0):self.position.y = 0
         if(self.position.y > 650):self.position.y = 650
+        self.rect.center = self.position + vector2(40,40)
 
     def rotate(self, clockwise: bool):
         if clockwise:
             self.angle += self.DENTAL_ANGLE
-            #self.direction = vector2.rotate(self.direction,self.DENTAL_ANGLE)
-            # self.image = pygame.transform.rotate(self.image, -self.DENTAL_ANGLE)
         else:
             self.angle -= self.DENTAL_ANGLE
-            #self.direction = vector2.rotate(self.direction,-self.DENTAL_ANGLE)
-            # self.image = pygame.transform.rotate(self.image, self.DENTAL_ANGLE)
+            
         self.image,self.rect = self.rot_center(self.rootImage,self.rect,self.angle)
-        self.direction = vector2.rotate(self.rootDir,self.angle)
-        #self.image = pygame.transform.rotate(self.image, self.angle)
+        temDirection = vector2.rotate(self.rootDir,self.angle + 180)
+        self.direction = vector2(temDirection.x,-temDirection.y)
+        #print(self.angle ,"--", self.direction)
         
 
     def rot_center(self,image, rect, angle):
@@ -57,11 +55,14 @@ class Player(pygame.sprite.Sprite):
         rot_rect = rot_image.get_rect(center=rect.center)
         return rot_image,rot_rect
     def update(self,screen):
+        
         pygame.draw.rect(screen,(0,200,200),self.rect)
         screen.blit(self.image,self.position)
         
     def fire(self):
         return self.position,self.direction
 
-    def hit(self,image):
-        pass
+    def hit(self,bullet):
+        if self.rect.collidepoint(bullet.pos):
+            return True
+        return False

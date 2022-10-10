@@ -62,14 +62,15 @@ class GameController():
                     pygame.quit()
                     sys.exit()
                                         
-            self.extraPlayers.Update(self.state,self.screen,self.bulletManager)
-            self.mainPlayers.Update(self.state,self.screen,self.bulletManager)
+            self.extraPlayers.Update(self.state,self.screen,self.bulletManager,10)
+            self.mainPlayers.Update(self.state,self.screen,self.bulletManager,10)
             self.edgeManager.draw(self.screen)
             self.bulletManager.moveAllBullet(self.screen, self.edgeManager)
-            
+            if self.state == GameState.PLAYING:
+                if self.mainPlayers.players.__len__() == 0 or self.extraPlayers.players.__len__() == 0:
+                    self.endGame();
             pygame.display.update()
-            if self.mainPlayers.players.__len__ == 0 or self.extraPlayers.players.__len__ == 0:
-                self.endGame();
+            self.CheckBulletCollision()
             self.clock.tick(FPS)
 
     def endGame(self):
@@ -79,9 +80,26 @@ class GameController():
     def resetGame(self):
         self.mainPlayers.players.clear()
         self.extraPlayers.players.clear()
+        self.bulletManager.bulletList.clear()
         self.InitGame()
         self.state = GameState.PLAYING
-        
+    def CheckBulletCollision(self):
+        for bullet in self.bulletManager.bulletList:
+            for player in self.mainPlayers.players:
+                if player.hit(bullet):
+                    print("Main player hit bullet")
+                    if self.mainPlayers.players.__len__() - 1 != 0 and player == self.mainPlayers.currentPlayer:
+                        self.mainPlayers.SwitchPlayer()
+                    self.mainPlayers.RemovePlayer(player)
+            for player in self.extraPlayers.players:
+            
+                if player.hit(bullet):
+                    if self.extraPlayers.players.__len__() -1 != 0 and player == self.extraPlayers.currentPlayer:
+                        self.extraPlayers.SwitchPlayer()
+                    self.extraPlayers.RemovePlayer(player)
+                    print("Extra player hit bullet")
+
+                   
     def HandleEventUI(self):
         pass
         
