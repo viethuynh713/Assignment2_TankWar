@@ -24,7 +24,14 @@ class Bullet:
     
     def checkBounce(self, edgeManager: EdgeManager) -> None:
         if self.pos != self.prevPos:
-            self.pos, self.direction = edgeManager.checkBounce(self.pos, self.prevPos, self.direction)
+            pos, direction = edgeManager.checkBounce(self.pos, self.prevPos, self.direction)
+            if pos != self.pos:
+                self.speed -= EDGE_FRICTION
+                if self.speed <= 0:
+                    self.bulletManager.removeBullet(self)
+                    return
+            self.pos, self.direction = (pos, direction)
+            
 
     def draw(self, screen) -> None:
         pygame.draw.circle(screen, (0, 0, 255), self.pos, 5)

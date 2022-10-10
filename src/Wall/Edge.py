@@ -14,6 +14,8 @@ class Edge:
 
     def checkBounce(self, pos: Vector2, prevPos: Vector2) -> tuple:
         cutPoint = cutPointOf2Lines(self.edge, (prevPos, pos))
+        if prevPos.x == 100:
+            print(cutPoint)
         if cutPoint == pos:
             cutPoint = None
         return (cutPoint, self)
