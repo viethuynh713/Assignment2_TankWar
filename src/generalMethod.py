@@ -20,21 +20,24 @@ def lineEquation(pos1: Vector2, pos2: Vector2) -> tuple:
     return (a, b, c)
 
 def isPointInLine(line: tuple[Vector2, Vector2], point: Vector2) -> bool:
-    if (point.x >= line[0].x and point.x <= line[1].x) or (point.x >= line[1].x and point.x <= line[0].x):
+    if line[0].x != line[1].x:
+        if (point.x >= line[0].x and point.x <= line[1].x) or (point.x >= line[1].x and point.x <= line[0].x):
+            return True
+        return False
+    if (point.y >= line[0].y and point.y <= line[1].y) or (point.y >= line[1].y and point.y <= line[0].y):
         return True
     return False
 
 def cutPointOf2Lines(line1: tuple[Vector2, Vector2], line2: tuple[Vector2, Vector2]) -> Vector2:
     a1, b1, c1 = lineEquation(line1[0], line1[1])
     a2, b2, c2 = lineEquation(line2[0], line2[1])
-    if a1 == None or a2 == None:
-        return None
     A = np.array([[a1, b1], [a2, b2]])
     B = np.array([-c1, -c2])
     cutPntx, cutPnty = solveSystemEquations(A, B)
+    if cutPntx == None or cutPnty == None:
+        return None
     cutPnt = Vector2(cutPntx, cutPnty)
     if isPointInLine(line1, cutPnt) and isPointInLine(line2, cutPnt):
-        print(str(cutPnt))
         return cutPnt
     return None
 
@@ -51,9 +54,7 @@ def symmetryPointThroughLine(line: tuple[Vector2, Vector2], point: Vector2) -> V
     return Vector2(x, y)
 
 def reflectVector(velocity: Vector2, normalize: Vector2) -> Vector2:
-    # print(str(velocity) + ", " + str(normalize))
     angle = abs(Vector2.angle_to(velocity, normalize))
-    print(angle)
     n = normalize.copy()
     if angle < 90:
         n = -n
