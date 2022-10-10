@@ -196,7 +196,7 @@ class GameController():
         self.edgeManager.createEdge(Vector2(400, 320), Vector2(880, 320))
         self.edgeManager.createEdge(Vector2(400, 400), Vector2(880, 400))
 
-        self.bulletManager.createBullet(Vector2(400, 360), Vector2.rotate(UNIT_VECTOR, 30))
+        # self.bulletManager.createBullet(Vector2(400, 360), Vector2.rotate(UNIT_VECTOR, 30))
 
         # Set icon for the game
         
