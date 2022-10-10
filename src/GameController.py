@@ -56,32 +56,32 @@ class GameController():
         # Set icon for the game
         while True:
             self.screen.fill((200,255,255))
-            self.screen.blit(icon,(100,100))
+            #self.screen.blit(icon,(100,100))
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == KEYDOWN:
-                    if event.key == K_1:
-                        icon = pygame.transform.rotate(icon,10)
-                    elif event.key == K_2:
-                        icon = pygame.transform.rotate(icon,-10)
-                        
-                        
-                
+                                        
             self.extraPlayers.Update(self.state,self.screen,self.bulletManager)
             self.mainPlayers.Update(self.state,self.screen,self.bulletManager)
             self.edgeManager.draw(self.screen)
             self.bulletManager.moveAllBullet(self.screen, self.edgeManager)
             
             pygame.display.update()
+            if self.mainPlayers.players.__len__ == 0 or self.extraPlayers.players.__len__ == 0:
+                self.endGame();
             self.clock.tick(FPS)
 
     def endGame(self):
-        pass
+        print("End game")
+        self.state = GameState.ENDED
 
     def resetGame(self):
-        pass
+        self.mainPlayers.players.clear()
+        self.extraPlayers.players.clear()
+        self.InitGame()
+        self.state = GameState.PLAYING
+        
     def HandleEventUI(self):
         pass
         

@@ -48,7 +48,7 @@ class Player(pygame.sprite.Sprite):
             #self.direction = vector2.rotate(self.direction,-self.DENTAL_ANGLE)
             # self.image = pygame.transform.rotate(self.image, self.DENTAL_ANGLE)
         self.image,self.rect = self.rot_center(self.rootImage,self.rect,self.angle)
-        self.direction = vector2.rotate(self.rootDir,self.angle + 90)
+        self.direction = vector2.rotate(self.rootDir,self.angle)
         #self.image = pygame.transform.rotate(self.image, self.angle)
         
 
