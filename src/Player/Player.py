@@ -18,9 +18,9 @@ class Player(pygame.sprite.Sprite):
             self.rootImage = pygame.image.load('../asset/Image/player.png')
         else:
             self.rootImage = pygame.image.load('../asset/Image/extraPlayer.png')
-        self.rootImage = pygame.transform.scale(self.rootImage,(80,80))
+        self.rootImage = pygame.transform.scale(self.rootImage,(50,50))
         self.rect = self.rootImage.get_rect()
-        self.rect.center = pos + vector2(30,40)
+        self.rect.center = pos + vector2(25,25)
         self.image,self.rect = self.rot_center(self.rootImage,self.rect,self.angle)
 
     def CalculateAngle(self):
@@ -36,7 +36,7 @@ class Player(pygame.sprite.Sprite):
         if(self.position.x > 1210):self.position.x = 1210
         if(self.position.y < 0):self.position.y = 0
         if(self.position.y > 650):self.position.y = 650
-        self.rect.center = self.position + vector2(40,40)
+        self.rect.center = self.position + vector2(25,25)
 
     def rotate(self, clockwise: bool):
         if clockwise:
@@ -60,7 +60,7 @@ class Player(pygame.sprite.Sprite):
         screen.blit(self.image,self.position)
         
     def fire(self):
-        return self.position,self.direction
+        return self.position + self.direction*70,self.direction
 
     def hit(self,bullet):
         if self.rect.collidepoint(bullet.pos):
