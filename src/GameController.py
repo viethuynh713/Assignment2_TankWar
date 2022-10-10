@@ -36,7 +36,6 @@ class GameController():
         self.extraPlayers = PlayerManager(PlayerType.EXTRA)
         #self.bot
         self.maxPlayer = 2;
-        self.InitGame()
         self.edgeManager = EdgeManager()
         self.bulletManager = BulletManager()
         self.Play()
@@ -52,44 +51,44 @@ class GameController():
         
 
     def HandleEventUI(self):
-        #self.screen.blit(self.background, (0, 0))
+        
+        self.screen.blit(self.backgroundInGame, (0,0))
         if self.state == GameState.INIT:
             # TODO: Draw panel game
-            self.screen.blit(self.backgroundMainMenu, (0,0))
             self.screen.blit(self.logo, (363, 40))
 
             if Button(530, 355, self.playButton, 1).draw(self.screen):
                 self.isOpenSetting = False
                 self.state = GameState.PLAYING
+                self.InitGame()
                 #playMusic(self.isMusicDisable, ingame_music_mp3)
 
             if Button(530, 555, self.exitButtonMenu, 1).draw(self.screen):
                 self.state = GameState.EXIT
             
-            if Button(1207, 21, self.settingIcon, 1).draw(self.screen):
-                if self.isOpenSetting:
-                    self.isOpenSetting = False
-                else:
-                    self.isOpenSetting = True
+            # if Button(1207, 21, self.settingIcon, 1).draw(self.screen):
+            #     if self.isOpenSetting:
+            #         self.isOpenSetting = False
+            #     else:
+            #         self.isOpenSetting = True
             
-            if self.isOpenSetting:
-                if self.isVolumeDisable:
-                    if Button(1207, 98, self.volumeDisableIcon, 1).draw(self.screen):
-                        self.isVolumeDisable = False
-                else:
-                    if Button(1207, 98, self.volumeActiveIcon, 1).draw(self.screen):
-                        self.isVolumeDisable = True
+            # if self.isOpenSetting:
+            #     if self.isVolumeDisable:
+            #         if Button(1207, 98, self.volumeDisableIcon, 1).draw(self.screen):
+            #             self.isVolumeDisable = False
+            #     else:
+            #         if Button(1207, 98, self.volumeActiveIcon, 1).draw(self.screen):
+            #             self.isVolumeDisable = True
 
-                if (self.isMusicDisable and Button(1207, 175, self.musicDisableIcon, 1).draw(self.screen)) \
-                    or (not self.isMusicDisable and Button(1207, 175, self.musicActiveIcon, 1).draw(self.screen)):
-                        self.isMusicDisable = None#switchMusic(self.isMusicDisable)
+            #     if (self.isMusicDisable and Button(1207, 175, self.musicDisableIcon, 1).draw(self.screen)) \
+            #         or (not self.isMusicDisable and Button(1207, 175, self.musicActiveIcon, 1).draw(self.screen)):
+            #             self.isMusicDisable = None#switchMusic(self.isMusicDisable)
                 
             if Button(1200, 640, self.aboutUsButton, 0.5).draw(self.screen):
                 webbrowser.open("https://drive.google.com/file/d/1njq8S15yb5eUZwvlXC8dDCMySusKQqPH/view?usp=sharing")
                 # will change
 
         if self.state == GameState.PLAYING:
-            self.screen.blit(self.backgroundInGame, (0,0))
             if Button(1207, 21, self.settingIcon, 1).draw(self.screen):
                 self.state = GameState.PAUSE
                   
@@ -99,23 +98,22 @@ class GameController():
                 self.state = GameState.PLAYING
             if Button(464, 333, self.exitButtonSetting, 1).draw(self.screen):
                 self.state = GameState.INIT
-                self.screen.blit(self.backgroundMainMenu, (0,0))
+                self.ClearGame()
                 self.screen.blit(self.logo, (363, 40))
                 
                 #playMusic(self.isMusicDisable, lobby_music_mp3)
             
-            if self.isVolumeDisable:
-                if Button(532, 429, self.volumeDisableIcon, 1).draw(self.screen):
-                    self.isVolumeDisable = False
-            else:
-                if Button(532, 429, self.volumeActiveIcon, 1).draw(self.screen):
-                    self.isVolumeDisable = True
+            # if self.isVolumeDisable:
+            #     if Button(532, 429, self.volumeDisableIcon, 1).draw(self.screen):
+            #         self.isVolumeDisable = False
+            # else:
+            #     if Button(532, 429, self.volumeActiveIcon, 1).draw(self.screen):
+            #         self.isVolumeDisable = True
 
-            if (self.isMusicDisable and Button(683, 429, self.musicDisableIcon, 1).draw(self.screen)) or (not self.isMusicDisable and Button(683, 429, self.musicActiveIcon, 1).draw(self.screen)):
-                    self.isMusicDisable = None#switchMusic(self.isMusicDisable)
+            # if (self.isMusicDisable and Button(683, 429, self.musicDisableIcon, 1).draw(self.screen)) or (not self.isMusicDisable and Button(683, 429, self.musicActiveIcon, 1).draw(self.screen)):
+            #         self.isMusicDisable = None#switchMusic(self.isMusicDisable)
             
         if self.state == GameState.END:
-            self.screen.blit(self.backgroundInGame, (0,0))
             self.endTemplate = pygame.transform.scale(self.settingTemplate, (int(self.settingTemplate.get_width() * 1.3), int(self.settingTemplate.get_height() * 1.3)))
             self.screen.blit(self.endTemplate, (300, 98))
             if Button(467, 517, self.homeButton, 1).draw(self.screen):
@@ -127,7 +125,7 @@ class GameController():
             
             if Button(725, 517, self.restartButton, 1 ).draw(self.screen):
                 self.state = GameState.PLAYING
-                self.InitGame()
+                self.resetGame()
 
             if self.resultPlayer1 == Result.WIN:
                 self.screen.blit(self.winIcon, (355,150))
@@ -203,10 +201,8 @@ class GameController():
         # Set icon for the game
         
         while True:
-            self.screen.fill((200,255,255))
-
             self.HandleEventUI()
-            # print(self.state)
+            #self.screen.fill((200,255,255))
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -214,23 +210,25 @@ class GameController():
                                         
             self.extraPlayers.Update(self.state,self.screen,self.bulletManager,10)
             self.mainPlayers.Update(self.state,self.screen,self.bulletManager,10)
-            self.edgeManager.draw(self.screen)
-            self.bulletManager.moveAllBullet(self.screen, self.edgeManager)
+            if self.state == GameState.PLAYING:
+                self.edgeManager.draw(self.screen)
+                self.bulletManager.moveAllBullet(self.screen, self.edgeManager)
             if self.state == GameState.PLAYING:
                 if self.mainPlayers.players.__len__() == 0 or self.extraPlayers.players.__len__() == 0:
                     self.endGame();
-            pygame.display.update()
             self.CheckBulletCollision()
             self.clock.tick(FPS)
+            pygame.display.update()
 
     def endGame(self):
-        print("End game")
-        self.state = GameState.ENDED
-
-    def resetGame(self):
+        self.state = GameState.END
+    def ClearGame(self):
         self.mainPlayers.players.clear()
         self.extraPlayers.players.clear()
         self.bulletManager.bulletList.clear()
+        
+    def resetGame(self):
+        self.ClearGame()
         self.InitGame()
         self.state = GameState.PLAYING
     def CheckBulletCollision(self):
@@ -249,7 +247,3 @@ class GameController():
                     self.extraPlayers.RemovePlayer(player)
                     print("Extra player hit bullet")
 
-                   
-    def HandleEventUI(self):
-        pass
-        
