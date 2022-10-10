@@ -3,6 +3,11 @@ import pygame
 from pygame.locals import *
 from pygame.math import *
 from Bullet.BulletManager import BulletManager
+from Button import *
+import webbrowser
+from enum import Enum
+import random
+import math
 
 from Constant import *
 from EnumClass import *
@@ -11,9 +16,21 @@ from Wall.EdgeManager import EdgeManager
 
 
 vector2 = pygame.math.Vector2
+
+
+class Result(Enum):
+    LOSE = 0,
+    WIN = 1;
+
+
 class GameController():
     def __init__(self):
-        self.state = GameState.PLAYING
+        self.isOpenSetting = False
+        self.isMusicDisable = False
+        self.isVolumeDisable = False
+        self.resultPlayer1 = Result.LOSE
+        self.resultPlayer2 = Result.WIN
+        self.state = GameState.INIT
         self.mode = Mode.PVP
         self.mainPlayers = PlayerManager(PlayerType.MAIN)
         self.extraPlayers = PlayerManager(PlayerType.EXTRA)
@@ -32,6 +49,107 @@ class GameController():
         if self.mode == Mode.PVE:
             pass
             
+        
+
+    def HandleEventUI(self):
+        #self.screen.blit(self.background, (0, 0))
+        if self.state == GameState.INIT:
+            # TODO: Draw panel game
+            self.screen.blit(self.backgroundMainMenu, (0,0))
+            self.screen.blit(self.logo, (363, 40))
+
+            if Button(530, 355, self.playButton, 1).draw(self.screen):
+                self.isOpenSetting = False
+                self.state = GameState.PLAYING
+                #playMusic(self.isMusicDisable, ingame_music_mp3)
+
+            if Button(530, 555, self.exitButtonMenu, 1).draw(self.screen):
+                self.state = GameState.EXIT
+            
+            if Button(1207, 21, self.settingIcon, 1).draw(self.screen):
+                if self.isOpenSetting:
+                    self.isOpenSetting = False
+                else:
+                    self.isOpenSetting = True
+            
+            if self.isOpenSetting:
+                if self.isVolumeDisable:
+                    if Button(1207, 98, self.volumeDisableIcon, 1).draw(self.screen):
+                        self.isVolumeDisable = False
+                else:
+                    if Button(1207, 98, self.volumeActiveIcon, 1).draw(self.screen):
+                        self.isVolumeDisable = True
+
+                if (self.isMusicDisable and Button(1207, 175, self.musicDisableIcon, 1).draw(self.screen)) \
+                    or (not self.isMusicDisable and Button(1207, 175, self.musicActiveIcon, 1).draw(self.screen)):
+                        self.isMusicDisable = None#switchMusic(self.isMusicDisable)
+                
+            if Button(1200, 640, self.aboutUsButton, 0.5).draw(self.screen):
+                webbrowser.open("https://drive.google.com/file/d/1njq8S15yb5eUZwvlXC8dDCMySusKQqPH/view?usp=sharing")
+                # will change
+
+        if self.state == GameState.PLAYING:
+            self.screen.blit(self.backgroundInGame, (0,0))
+            if Button(1207, 21, self.settingIcon, 1).draw(self.screen):
+                self.state = GameState.PAUSE
+                  
+        if self.state == GameState.PAUSE:
+            self.screen.blit(self.settingTemplate, (375, 156))
+            if Button(464, 248, self.resumeButton, 1).draw(self.screen):
+                self.state = GameState.PLAYING
+            if Button(464, 333, self.exitButtonSetting, 1).draw(self.screen):
+                self.state = GameState.INIT
+                self.screen.blit(self.backgroundMainMenu, (0,0))
+                self.screen.blit(self.logo, (363, 40))
+                
+                #playMusic(self.isMusicDisable, lobby_music_mp3)
+            
+            if self.isVolumeDisable:
+                if Button(532, 429, self.volumeDisableIcon, 1).draw(self.screen):
+                    self.isVolumeDisable = False
+            else:
+                if Button(532, 429, self.volumeActiveIcon, 1).draw(self.screen):
+                    self.isVolumeDisable = True
+
+            if (self.isMusicDisable and Button(683, 429, self.musicDisableIcon, 1).draw(self.screen)) or (not self.isMusicDisable and Button(683, 429, self.musicActiveIcon, 1).draw(self.screen)):
+                    self.isMusicDisable = None#switchMusic(self.isMusicDisable)
+            
+        if self.state == GameState.END:
+            self.screen.blit(self.backgroundInGame, (0,0))
+            self.endTemplate = pygame.transform.scale(self.settingTemplate, (int(self.settingTemplate.get_width() * 1.3), int(self.settingTemplate.get_height() * 1.3)))
+            self.screen.blit(self.endTemplate, (300, 98))
+            if Button(467, 517, self.homeButton, 1).draw(self.screen):
+                self.state = GameState.INIT
+                self.screen.blit(self.backgroundMainMenu, (0,0))
+                self.screen.blit(self.logo, (363, 40))
+                
+                #playMusic(self.isMusicDisable, lobby_music_mp3)
+            
+            if Button(725, 517, self.restartButton, 1 ).draw(self.screen):
+                self.state = GameState.PLAYING
+                self.InitGame()
+
+            if self.resultPlayer1 == Result.WIN:
+                self.screen.blit(self.winIcon, (355,150))
+                self.screen.blit(self.winImage, (370, 170))
+            else:
+                self.screen.blit(self.loseIcon, (355,150))
+                self.screen.blit(self.loseImage, (370, 210))
+
+            if self.resultPlayer2 == Result.WIN:
+                self.screen.blit(self.winIcon, (700,150))
+                self.screen.blit(self.winImage, (700, 170))
+            else:
+                self.screen.blit(self.loseIcon, (700,150))
+                self.screen.blit(self.loseImage, (700, 210))
+
+            
+
+            
+        if self.state == GameState.EXIT:
+            pygame.quit()
+            sys.exit()
+
     def Play(self):
         # Initialize
         pygame.init()
@@ -42,6 +160,30 @@ class GameController():
         pygame.display.set_caption("Tank War")
         # Set icon for the game
         icon = pygame.image.load("../asset/icon/war.png")
+        self.backgroundInGame = pygame.image.load("../asset/icon/Screen_InGame.png")
+        self.backgroundMainMenu = pygame.image.load("../asset/icon/Screen_Lobby.png")
+        self.logo = pygame.image.load("../asset/icon/asset/logo.png")
+        self.playButton = pygame.image.load("../asset/icon/asset/play_button.png")
+        self.exitButtonMenu = pygame.image.load("../asset/icon/asset/exit_button_menu.png")
+        self.settingIcon = pygame.image.load("../asset/icon/asset/setting_icon.png")
+        self.volumeActiveIcon = pygame.image.load("../asset/icon/asset/volume_active.png")
+        self.volumeDisableIcon = pygame.image.load("../asset/icon/asset/volume_disable.png")
+        self.musicActiveIcon = pygame.image.load("../asset/icon/asset/sound_active.png")
+        self.musicDisableIcon = pygame.image.load("../asset/icon/asset/sound_disable.png")
+        self.settingTemplate = pygame.image.load("../asset/icon/asset/setting_template.png")
+        self.resumeButton = pygame.image.load("../asset/icon/asset/resume_button.png")
+        self.exitButtonSetting = pygame.image.load("../asset/icon/asset/exit_button_setting.png")
+        self.yesButton = pygame.image.load("../asset/icon/asset/yes_button.png")
+        self.noButton = pygame.image.load("../asset/icon/asset/no_button.png")
+        self.homeButton = pygame.image.load("../asset/icon/asset/home_button.png")
+        self.restartButton = pygame.image.load("../asset/icon/asset/restart_button.png")
+        self.aboutUsButton = pygame.image.load("../asset/icon/asset/aboutUs_button.png")
+        self.exitPopupTemplate = pygame.image.load("../asset/icon/asset/exit_popup_template.png")
+        self.winImage = pygame.image.load("../asset/icon/asset/WinImage.png")
+        self.winIcon = pygame.image.load("../asset/icon/asset/WinIcon.png")
+        self.loseImage = pygame.image.load("../asset/icon/asset/LoseImage.png")
+        self.loseIcon = pygame.image.load("../asset/icon/asset/LoseIcon.png")
+        #self.font = pygame.font.Font("../font/BalsamiqSans-Bold.ttf", 45)
         pygame.display.set_icon(icon)
 
         self.edgeManager.createEdge(Vector2(100, 100), Vector2(1180, 100))
@@ -54,9 +196,12 @@ class GameController():
         self.bulletManager.createBullet(Vector2(500, 400), Vector2.rotate(UNIT_VECTOR, 0))
 
         # Set icon for the game
+        
         while True:
             self.screen.fill((200,255,255))
-            #self.screen.blit(icon,(100,100))
+
+            self.HandleEventUI()
+            print(self.state)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
