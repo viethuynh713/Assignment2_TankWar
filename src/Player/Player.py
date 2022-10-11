@@ -88,11 +88,12 @@ class Player(pygame.sprite.Sprite):
         return rot_image,rot_rect
     def update(self,screen):
         
+        
         # pygame.draw.rect(screen,(0,200,200),self.rect)
         screen.blit(self.image,self.position)
         
     def fire(self):
-        return self.rect.center + self.direction*70,self.direction
+        return self.rect.center + self.direction*60,self.direction
 
     def hit(self,bullet):
         if self.rect.collidepoint(bullet.pos):
