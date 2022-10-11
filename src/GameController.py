@@ -209,7 +209,7 @@ class GameController():
                 self.bulletManager.moveAllBullet(self.screen, self.edgeManager)
             if self.state == GameState.PLAYING:
                 if self.mainPlayers.players.__len__() == 0 or self.extraPlayers.players.__len__() == 0:
-                    self.endGame();
+                    self.endGame()
             self.CheckBulletCollision()
             self.clock.tick(FPS)
             pygame.display.update()
