@@ -1,5 +1,6 @@
 import pygame
 from Bullet.BulletManager import BulletManager
+from Constant import TIME_FIRE, TIME_SWITCH
 from EnumClass import GameState, PlayerType
 from Player.Player import Player
 
@@ -46,10 +47,10 @@ class PlayerManager:
         self.TimeSwitch -= dt
         if self.TimeFire <= 0:
             self.canFire = True
-            self.TimeFire = 3000
+            self.TimeFire = TIME_FIRE
         if self.TimeSwitch <= 0:
             self.CanSwitch = True
-            self.TimeSwitch = 1000
+            self.TimeSwitch = TIME_SWITCH
     def Update(self,state,screen,bulletManager:BulletManager,dt):
         press = pygame.key.get_pressed()
        
