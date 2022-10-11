@@ -4,6 +4,7 @@ import math
 import pygame
 
 from EnumClass import PlayerType
+from Wall.EdgeManager import EdgeManager
 
 vector2 = pygame.math.Vector2
 class Player(pygame.sprite.Sprite):
@@ -26,11 +27,27 @@ class Player(pygame.sprite.Sprite):
     def CalculateAngle(self):
         self.angle = vector2.angle_to(self.direction, vector2(0,-1))
 
-    def move(self, up: bool):
+    def move(self, up: bool, edgeManager: EdgeManager):
         if up:
             self.position += self.direction*self.SPEED
+            if edgeManager.checkCollidePlayer(self.rect):
+                self.position -= self.direction*self.SPEED
         else:
             self.position -= self.direction*self.SPEED
+            if edgeManager.checkCollidePlayer(self.rect):
+                self.position += self.direction*self.SPEED
+        
+        if(self.position.x < 0):self.position.x = 0
+        if(self.position.x > 1210):self.position.x = 1210
+        if(self.position.y < 0):self.position.y = 0
+        if(self.position.y > 650):self.position.y = 650
+        self.rect.center = self.position + vector2(25,25)
+        
+        if edgeManager.checkCollidePlayer(self.rect):
+            if up:
+                self.position -= self.direction*self.SPEED
+            else:
+                self.position += self.direction*self.SPEED
         
         if(self.position.x < 0):self.position.x = 0
         if(self.position.x > 1210):self.position.x = 1210
@@ -38,16 +55,31 @@ class Player(pygame.sprite.Sprite):
         if(self.position.y > 650):self.position.y = 650
         self.rect.center = self.position + vector2(25,25)
 
-    def rotate(self, clockwise: bool):
+
+    def rotate(self, clockwise: bool, edgeManager: EdgeManager):
         if clockwise:
             self.angle += self.DENTAL_ANGLE
+            if edgeManager.checkCollidePlayer(self.rect):
+                self.angle -= self.DENTAL_ANGLE
         else:
             self.angle -= self.DENTAL_ANGLE
+            if edgeManager.checkCollidePlayer(self.rect):
+                self.angle += self.DENTAL_ANGLE
             
         self.image,self.rect = self.rot_center(self.rootImage,self.rect,self.angle)
         temDirection = vector2.rotate(self.rootDir,self.angle + 180)
         self.direction = vector2(temDirection.x,-temDirection.y)
         #print(self.angle ,"--", self.direction)
+        
+        if edgeManager.checkCollidePlayer(self.rect):
+            if clockwise:
+                self.angle -= self.DENTAL_ANGLE
+            else:
+                self.angle += self.DENTAL_ANGLE
+            
+        self.image,self.rect = self.rot_center(self.rootImage,self.rect,self.angle)
+        temDirection = vector2.rotate(self.rootDir,self.angle + 180)
+        self.direction = vector2(temDirection.x,-temDirection.y)
         
 
     def rot_center(self,image, rect, angle):
@@ -56,11 +88,11 @@ class Player(pygame.sprite.Sprite):
         return rot_image,rot_rect
     def update(self,screen):
         
-        pygame.draw.rect(screen,(0,200,200),self.rect)
+        # pygame.draw.rect(screen,(0,200,200),self.rect)
         screen.blit(self.image,self.position)
         
     def fire(self):
-        return self.position + self.direction*70,self.direction
+        return self.rect.center + self.direction*70,self.direction
 
     def hit(self,bullet):
         if self.rect.collidepoint(bullet.pos):

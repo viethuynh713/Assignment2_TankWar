@@ -32,24 +32,32 @@ class GameController():
         self.resultPlayer2 = Result.WIN
         self.state = GameState.INIT
         self.mode = Mode.PVP
-        self.mainPlayers = PlayerManager(PlayerType.MAIN)
-        self.extraPlayers = PlayerManager(PlayerType.EXTRA)
         #self.bot
         self.maxPlayer = 2;
         self.edgeManager = EdgeManager()
         self.bulletManager = BulletManager()
+        self.mainPlayers = PlayerManager(PlayerType.MAIN, self.edgeManager)
+        self.extraPlayers = PlayerManager(PlayerType.EXTRA, self.edgeManager)
         self.Play()
 
     def InitGame(self):
         if self.mode == Mode.PVP:
             for i in range(self.maxPlayer):
-                self.mainPlayers.InitOnePlayer(vector2(100,i*300 + 100))
-                self.extraPlayers.InitOnePlayer(vector2(1000,i*300 + 100))
+                self.mainPlayers.InitOnePlayer(vector2(101,i*301 + 101))
+                self.extraPlayers.InitOnePlayer(vector2(1001,i*301 + 101))
         if self.mode == Mode.PVE:
             pass
+        self.edgeManager.createEdge(Vector2(100, 100), Vector2(1180, 100))
+        self.edgeManager.createEdge(Vector2(1180, 100), Vector2(1180, 620))
+        self.edgeManager.createEdge(Vector2(1180, 620), Vector2(100, 620))
+        self.edgeManager.createEdge(Vector2(100, 620), Vector2(100, 100))
+        self.edgeManager.createEdge(Vector2(300, 200), Vector2(200, 300))
+        self.edgeManager.createEdge(Vector2(980, 200), Vector2(1080, 300))
+        self.edgeManager.createEdge(Vector2(200, 420), Vector2(300, 520))
+        self.edgeManager.createEdge(Vector2(980, 520), Vector2(1080, 420))
+        self.edgeManager.createEdge(Vector2(400, 320), Vector2(880, 320))
+        self.edgeManager.createEdge(Vector2(400, 400), Vector2(880, 400))
             
-        
-
     def HandleEventUI(self):
         
         self.screen.blit(self.backgroundInGame, (0,0))
@@ -184,20 +192,6 @@ class GameController():
         #self.font = pygame.font.Font("../font/BalsamiqSans-Bold.ttf", 45)
         pygame.display.set_icon(icon)
 
-        self.edgeManager.createEdge(Vector2(100, 100), Vector2(1180, 100))
-        self.edgeManager.createEdge(Vector2(1180, 100), Vector2(1180, 620))
-        self.edgeManager.createEdge(Vector2(1180, 620), Vector2(100, 620))
-        self.edgeManager.createEdge(Vector2(100, 620), Vector2(100, 100))
-
-        self.edgeManager.createEdge(Vector2(300, 200), Vector2(200, 300))
-        self.edgeManager.createEdge(Vector2(980, 200), Vector2(1080, 300))
-        self.edgeManager.createEdge(Vector2(200, 420), Vector2(300, 520))
-        self.edgeManager.createEdge(Vector2(980, 520), Vector2(1080, 420))
-        self.edgeManager.createEdge(Vector2(400, 320), Vector2(880, 320))
-        self.edgeManager.createEdge(Vector2(400, 400), Vector2(880, 400))
-
-        # self.bulletManager.createBullet(Vector2(400, 360), Vector2.rotate(UNIT_VECTOR, 30))
-
         # Set icon for the game
         
         while True:
@@ -239,11 +233,13 @@ class GameController():
                     if self.mainPlayers.players.__len__() - 1 != 0 and player == self.mainPlayers.currentPlayer:
                         self.mainPlayers.SwitchPlayer()
                     self.mainPlayers.RemovePlayer(player)
+                    self.bulletManager.removeBullet(bullet)
             for player in self.extraPlayers.players:
             
                 if player.hit(bullet):
                     if self.extraPlayers.players.__len__() -1 != 0 and player == self.extraPlayers.currentPlayer:
                         self.extraPlayers.SwitchPlayer()
                     self.extraPlayers.RemovePlayer(player)
+                    self.bulletManager.removeBullet(bullet)
                     print("Extra player hit bullet")
 

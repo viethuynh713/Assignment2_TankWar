@@ -14,11 +14,14 @@ class Edge:
 
     def checkBounce(self, pos: Vector2, prevPos: Vector2) -> tuple:
         cutPoint = cutPointOf2Lines(self.edge, (prevPos, pos))
-        if prevPos.x == 100:
-            print(cutPoint)
         if cutPoint == pos:
             cutPoint = None
         return (cutPoint, self)
+
+    def checkCollidePlayer(self, rect: Rect) -> bool:
+        if isLineIntersectRect(self.edge, rect):
+            return True
+        return False
 
     def draw(self, screen):
         pygame.draw.line(screen, (48, 213, 200), self.edge[0], self.edge[1], 3)

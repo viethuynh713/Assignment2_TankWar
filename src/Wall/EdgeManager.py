@@ -3,7 +3,7 @@ from pygame.locals import *
 from pygame.math import *
 
 from Wall.Edge import Edge
-from generalMethod import reflectVector, symmetryPointThroughLine
+from generalMethod import cutPointOf2Lines, reflectVector, symmetryPointThroughLine
 
 class EdgeManager:
     def __init__(self) -> None:
@@ -16,8 +16,6 @@ class EdgeManager:
     def checkBounce(self, pos: Vector2, prevPos: Vector2, direction: Vector2) -> tuple[Vector2, Vector2]:
         posRes, dirRes = (pos, direction)
         cutPointRes, edgeRes = (None, None)
-        # if prevPos.x == 100:
-        print(str(pos) + ", " + str(prevPos))
         for edge in self.edgeList:
             cutPointTemp, edgeTemp = edge.checkBounce(pos, prevPos)
             if cutPointTemp != None:
@@ -29,6 +27,12 @@ class EdgeManager:
             posRes = symmetryPointThroughLine(edgeRes.getEdge(), pos)
             dirRes = reflectVector(direction, edgeRes.getNormalize())
         return (posRes, dirRes)
+
+    def checkCollidePlayer(self, rect: Rect) -> bool:
+        for edge in self.edgeList:
+            if edge.checkCollidePlayer(rect):
+                return True
+        return False
 
     def draw(self, screen):
         for edge in self.edgeList:

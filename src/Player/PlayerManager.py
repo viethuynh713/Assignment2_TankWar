@@ -1,13 +1,15 @@
-
 import pygame
 from Bullet.BulletManager import BulletManager
 from EnumClass import GameState, PlayerType
 from Player.Player import Player
 
 from pygame.locals import *
+
+from Wall.EdgeManager import EdgeManager
 vector2 = pygame.math.Vector2
 class PlayerManager:
-    def __init__(self,typeOfPlayer:PlayerType):
+    def __init__(self, typeOfPlayer:PlayerType, edgeManager: EdgeManager):
+        self.edgeManager = edgeManager
         self.players = []
         self.canFire = True
         self.CanSwitch = True
@@ -55,13 +57,13 @@ class PlayerManager:
         if state == GameState.PLAYING:
             if self.playerType == PlayerType.MAIN:
                 if press[pygame.K_a]:
-                    self.currentPlayer.rotate(True)
+                    self.currentPlayer.rotate(True, self.edgeManager)
                 if press[pygame.K_d]:
-                    self.currentPlayer.rotate(False)
+                    self.currentPlayer.rotate(False, self.edgeManager)
                 if press[pygame.K_w]:
-                    self.currentPlayer.move(True)
+                    self.currentPlayer.move(True, self.edgeManager)
                 if press[pygame.K_s]:
-                    self.currentPlayer.move(False)
+                    self.currentPlayer.move(False, self.edgeManager)
                 if press[pygame.K_v]and self.CanSwitch:
                     self.SwitchPlayer()
                     self.CanSwitch = False
@@ -72,13 +74,13 @@ class PlayerManager:
                     
             else:
                 if press[pygame.K_LEFT]:
-                    self.currentPlayer.rotate(True)
+                    self.currentPlayer.rotate(True, self.edgeManager)
                 if press[pygame.K_RIGHT]:
-                    self.currentPlayer.rotate(False)
+                    self.currentPlayer.rotate(False, self.edgeManager)
                 if press[pygame.K_UP]:
-                    self.currentPlayer.move(True)
+                    self.currentPlayer.move(True, self.edgeManager)
                 if press[pygame.K_DOWN]:
-                    self.currentPlayer.move(False)
+                    self.currentPlayer.move(False, self.edgeManager)
                 if press[pygame.K_n] and self.CanSwitch:
                     self.SwitchPlayer()
                     self.CanSwitch =False

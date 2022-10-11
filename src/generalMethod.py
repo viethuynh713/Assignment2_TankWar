@@ -1,3 +1,5 @@
+import pygame, sys
+from pygame.locals import *
 from pygame.math import *
 import numpy as np
 
@@ -40,6 +42,29 @@ def cutPointOf2Lines(line1: tuple[Vector2, Vector2], line2: tuple[Vector2, Vecto
     if isPointInLine(line1, cutPnt) and isPointInLine(line2, cutPnt):
         return cutPnt
     return None
+
+def isLineIntersectRect(line: tuple[Vector2, Vector2], rect: Rect) -> bool:
+    topleft = Vector2(rect.topleft)
+    topright = Vector2(rect.topright)
+    bottomleft = Vector2(rect.bottomleft)
+    bottomright = Vector2(rect.bottomright)
+    cutPointTop = cutPointOf2Lines(line, (topleft, topright))
+    cutPointRight = cutPointOf2Lines(line, (topright, bottomright))
+    cutPointBottom = cutPointOf2Lines(line, (bottomleft, bottomright))
+    cutPointLeft = cutPointOf2Lines(line, (topleft, bottomleft))
+    if cutPointTop != None:
+        print("top: " + str(cutPointTop))
+        return True
+    if cutPointRight != None:
+        print("right: " + str(cutPointRight))
+        return True
+    if cutPointBottom != None:
+        print("bottom: " + str(cutPointBottom))
+        return True
+    if cutPointLeft != None:
+        print("left: " + str(cutPointLeft))
+        return True
+    return False
 
 def perpendicularProjectPointToLine(line: tuple[Vector2, Vector2], point: Vector2) -> Vector2:
     a = Vector2.normalize(line[1] - line[0])
