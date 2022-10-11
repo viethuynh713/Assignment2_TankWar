@@ -18,7 +18,7 @@ class PlayerManager:
         self.TimeSwitch = 1000
         self.playerType = typeOfPlayer
         self.flag = pygame.image.load('../asset/icon/flag.png')
-        self.flag = pygame.transform.scale(self.flag,(30,30))
+        #self.flag = pygame.transform.scale(self.flag,(30,30))
         
     def InitOnePlayer(self,pos:vector2):
         dir = vector2()
@@ -89,10 +89,10 @@ class PlayerManager:
                     pos,dir = self.currentPlayer.fire()
                     bulletManager.createBullet(pos,dir)
                     self.canFire = False
+            screen.blit(self.flag,(self.currentPlayer.position.x - 45,self.currentPlayer.position.y - 45))
             for player in self.players:
                 player.update(screen)
                 
-            screen.blit(self.flag,(self.currentPlayer.position.x,self.currentPlayer.position.y))
             
             
         
