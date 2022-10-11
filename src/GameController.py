@@ -44,7 +44,7 @@ class GameController():
         if self.mode == Mode.PVP:
             for i in range(self.maxPlayer):
                 self.mainPlayers.InitOnePlayer(vector2(101,i*301 + 101))
-                self.extraPlayers.InitOnePlayer(vector2(1001,i*301 + 101))
+                self.extraPlayers.InitOnePlayer(vector2(1080,i*301 + 101))
         if self.mode == Mode.PVE:
             pass
         self.edgeManager.createEdge(Vector2(100, 100), Vector2(1180, 100))
